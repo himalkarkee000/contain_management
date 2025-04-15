@@ -28,7 +28,12 @@ class BookController {
     }
     findAll = async(req,res,next)=>{
        try {
-        const book = await BookModel.find()
+        const book = (await BookModel.find()).map(item => {
+            const fullUrl = req.protocol + '://' + req.get('host'); 
+            item.imageUrl = `${fullUrl}/uploads/books/${item.imageUrl}`
+            console.log("fullUrl", fullUrl, item)
+            return item;
+        })
 
         res.json({
             result:book,
