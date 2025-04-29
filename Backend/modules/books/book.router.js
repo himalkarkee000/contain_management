@@ -4,6 +4,7 @@ const bookCtrl = require('./book.controller')
 
 const bookRoute = require('express').Router()
 
+bookRoute.post('/test',bookCtrl.test)
 bookRoute.post('/book',setPath('books'),uploader.single('image'),bookCtrl.register)
 bookRoute.get('/book',bookCtrl.findAll)
 bookRoute.get('/book/:id',bookCtrl.findOne)

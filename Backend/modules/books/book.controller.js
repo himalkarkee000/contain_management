@@ -2,17 +2,24 @@ const BookModel = require("../../model/book.model")
 const bookSvc = require("./book.service")
 
 class BookController {
+    test= async(req,res,next)=>{
+        res.json({
+            code:500,
+            message:"Route is working"
+        })
+    }
     register = async(req,res,next)=>{
         try {
-            const{bookName,bookPrice,isbnNumber,authorName,publishedAt} = req.body
-           
-           
-            const book = {
-            
-                bookName,bookPrice,isbnNumber,authorName,publishedAt,
-                imageUrl:req.file.filename
-       
+            const{bookName,bookPrice,isbnNumber,authorName,publishedAt,publication} = req.body
+            const imageUrl = req.file.filename
+            if (!imageUrl) {
+                return res.status(400).json({ message: "Image not uploaded", result: null, meta: null });
             }
+            const book = {
+                bookName,bookPrice,isbnNumber,authorName,publishedAt,publication,
+                imageUrl
+            }
+            console.log(book)
             const registerBook = new BookModel(book)
             await registerBook.save()
             res.json({
@@ -28,7 +35,12 @@ class BookController {
     }
     findAll = async(req,res,next)=>{
        try {
-        const book = await BookModel.find()
+        const book = (await BookModel.find()).map(item =>{
+            const fullUrl = req.protocol +'://' +req.get('host');
+            item.imageUrl = `${fullUrl}/uploads/books/${item.imageUrl}`
+            // console.log("fullUrl",fullUrl,item)
+            return item;
+        })
 
         res.json({
             result:book,

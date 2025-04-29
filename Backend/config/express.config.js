@@ -4,14 +4,22 @@ const cors = require('cors')
 const helmet = require('helmet')
 const mainRoute = require("./router.config")
 const app = express()
+const path = require('path')
 
 
-app.use(cors())
-app.use(helmet())
+// app.use(cors({
+//     origin:'http://localhost:5174'
+// }))
+// app.use(helmet())
+app.use(cors({ origin: "*" }));
+app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(express.json())
 app.use(express.urlencoded({
     extended:true
 }))
+// console.log("_dirname",__dirname)
+// app.use(express.static(path.join(__dirname,"../public")))
+app.use("/", express.static("./public/"));
 
 app.use(mainRoute)
 
